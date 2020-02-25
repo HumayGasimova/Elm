@@ -1,28 +1,44 @@
+const path = require('path');
+const webpack = require('webpack');
+
 module.exports = {
-    entry: {
-      app: [
-        './index.js'
-      ]
-    },
+  // entry: __dirname + '/src/index.js',
   
-    output: {
-      filename: '[name].js',
-    },
+    // output: {
+    //   filename: '[name].js',
+    // },
   
     module: {
-      loaders: [
-        {
-          test:    /\.elm$/,
-          exclude: [/elm-stuff/, /node_modules/],
-          loader:  'elm-webpack-loader?verbose=true&warn=true',
-        },
-      ],
-  
-      noParse: /\.elm$/,
+      rules: [
+          {
+              test: /\.html$/,
+              exclude: /node_modules/,
+              loader: 'file-loader?name=[name].[ext]'
+          },
+          {
+              test: /\.elm$/,
+              exclude: [/elm-stuff/, /node_modules/],
+
+              use: [
+                  {loader: 'elm-hot-webpack-loader'},
+                  {
+                      loader: 'elm-webpack-loader',
+                      options: {
+                          cwd: __dirname,
+                          debug: false
+                      }
+                  }
+              ]
+          }
+      ]
     },
-  
+    plugins: [
+      new webpack.HotModuleReplacementPlugin()
+    ],
+    mode: 'development',
     devServer: {
       inline: true,
-      stats: { colors: true },
+      hot: true,
+      stats: 'errors-only'
     }
 };
