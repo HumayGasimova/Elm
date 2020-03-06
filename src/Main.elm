@@ -9,5 +9,5 @@ isValid char =
     char /= '-'
 
 main =
- Html.text <| String.filter (\char -> char /= '-') "222-11-5555"
+ Html.text <| String.pad 10 '*' "5"
    
