@@ -4,22 +4,15 @@ import Html exposing (..)
 import String exposing (..)
 
 -- MAIN
-guardians = [ "Star-lord", "Groot", "Gamora", "Drax", "Rocket" ]
+-- sum = List.foldl (\x a -> x + a) 0 [ 1, 2, 3, 4 ]
 
-lengths = List.map String.length guardians
+sum = List.foldl (+) 0 [ 1, 2, 3, 4 ]
 
--- List.filter (\x -> x < 6) lengths
+-- product = List.foldl (\x a -> x * a) 1 [ 1, 2, 3, 4 ]
 
-filterLength = List.filter ((>) 6) lengths
-
--- List.map (\x -> String.contains "-" x) guardians
-check1 = List.map (String.contains "-") guardians
-
--- List.map (\x -> String.startsWith "Dr" x) guardians
-
-check2 = List.map (String.startsWith "Dr") guardians
+product = List.foldl (*) 1 [ 1, 2, 3, 4 ]
    
-main = filterLength
+main = product
         |> Debug.toString
         |> Html.text
         
