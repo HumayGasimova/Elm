@@ -6,7 +6,6 @@ import Html
 import Regex
 
 -- MAIN
--- Folding from right
 
 validateEmail email =
     let

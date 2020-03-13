@@ -6,8 +6,6 @@ import Html
 import Regex
 
 -- MAIN
--- Folding from right
-
 
 --calculate perimeter using list
 triangleSidesList = [ 5, 4, 6 ]
