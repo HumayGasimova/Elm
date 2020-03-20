@@ -7,8 +7,8 @@ import Regex
 
 -- MAIN
 
-type alias TVShow =
- { creator: String
+type alias Person =
+ { lastName: String
  , age: Int
  , name: String
  }
@@ -19,16 +19,16 @@ person =
  , name = "Kate"
  }
 
-hasCreator tvShow = String.length tvShow.creator > 0
+creatorLastNameIsGiven per = String.length per.lastName > 0
 
-got = TVShow "" 50 "Black"
+got = Person "" 50 "Lisa"
 
 accessToValue = person.name
 
 accessToValue2 = .name got
 
 main = 
-        accessToValue2
+        creatorLastNameIsGiven got
         |> Debug.toString
         |> Html.text
         
