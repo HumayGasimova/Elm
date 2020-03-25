@@ -12,9 +12,6 @@ multiplyByFive number =
             5
     in
     number * multiplier
-
-multiplier =
-    6
 main = 
         multiplier
         |> Debug.toString
