@@ -1,33 +1,21 @@
-module Main exposing (..)
+module HttpExamples exposing (Model)
 
 import Browser
-
 import Html exposing (..)
-import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 
-import Http 
+import Http
+
 
 -- MAIN
 
-main : Program () Model Msg
-main =
-    Browser.element
-        { init = \flags -> ( [], Cmd.none )
-        , view = view
-        , update = update
-        , subscriptions = \_ -> Sub.none
-        }
+main = 
+   Browser.sandbox { init = init, update = update, view = view }
 
 -- MODEL
 
 type alias Model =
     List String
-
--- init : Model
--- init =
---    Model "" "" ""
-
 
 -- UPDATE
 
@@ -53,19 +41,8 @@ update msg model =
     case msg of
         SendHttpRequest ->
             ( model, getNicknames )
-            
-        DataReceived (Ok nicknamesStr) ->
-            let
-                nicknames =
-                    String.split "," nicknamesStr
-            in
-            ( nicknames, Cmd.none )
-
-        DataReceived (Err _) ->
-            ( model, Cmd.none )
 
 -- VIEW
-
 view : Model -> Html Msg
 view model =
     div []
@@ -79,3 +56,5 @@ view model =
 viewNickname : String -> Html Msg
 viewNickname nickname =
     li [] [ text nickname ]
+
+        
