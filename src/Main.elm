@@ -13,20 +13,26 @@ import Http
 main : Program () Model Msg
 main =
     Browser.element
-        { init = \flags -> ( [], Cmd.none )
+        { init = init
         , view = view
         , update = update
         , subscriptions = \_ -> Sub.none
         }
 
+init : () -> ( Model, Cmd Msg )
+init _ =
+    ( { nicknames = []
+      , errorMessage = Nothing
+      }
+    , Cmd.none
+    )        
+
 -- MODEL
-
+    
 type alias Model =
-    List String
-
--- init : Model
--- init =
---    Model "" "" ""
+    { nicknames : List String
+    , errorMessage : Maybe String
+    }
 
 
 -- UPDATE
@@ -59,20 +65,82 @@ update msg model =
                 nicknames =
                     String.split "," nicknamesStr
             in
-            ( nicknames, Cmd.none )
+            ( { model | nicknames = nicknames }, Cmd.none )
 
-        DataReceived (Err _) ->
-            ( model, Cmd.none )
+        DataReceived (Err httpError) ->
+            ( { model
+                | errorMessage = Just (buildErrorMessage httpError)
+              }
+            , Cmd.none
+            )
+
+buildErrorMessage : Http.Error -> String
+buildErrorMessage httpError =
+    case httpError of
+        Http.BadUrl message ->
+            message
+
+        Http.Timeout ->
+            "Server is taking too long to respond. Please try again later."
+
+        Http.NetworkError ->
+            "Unable to reach server."
+
+        Http.BadStatus statusCode ->
+            "Request failed with status code: " ++ String.fromInt statusCode
+
+        Http.BadBody message ->
+            message
 
 -- VIEW
+
+-- view : Model -> Html Msg
+-- view model =
+--     div []
+--         [ button [ onClick SendHttpRequest ]
+--             [ text "Get data from server" ]
+--         , h3 [] [ text "Old School Main Characters" ]
+--         , ul [] (List.map viewNickname model.nicknames)
+--         ]
+
+
+-- viewNickname : String -> Html Msg
+-- viewNickname nickname =
+--     li [] [ text nickname ]
 
 view : Model -> Html Msg
 view model =
     div []
         [ button [ onClick SendHttpRequest ]
             [ text "Get data from server" ]
-        , h3 [] [ text "Old School Main Characters" ]
-        , ul [] (List.map viewNickname model)
+        , viewNicknamesOrError model
+        ]
+
+viewNicknamesOrError : Model -> Html Msg
+viewNicknamesOrError model =
+    case model.errorMessage of
+        Just message ->
+            viewError message
+
+        Nothing ->
+            viewNicknames model.nicknames
+
+viewError : String -> Html Msg
+viewError errorMessage =
+    let
+        errorHeading =
+            "Couldn't fetch nicknames at this time."
+    in
+        div []
+            [ h3 [] [ text errorHeading ]
+            , text ("Error: " ++ errorMessage)
+            ]
+
+viewNicknames : List String -> Html Msg
+viewNicknames nicknames =
+    div []
+        [ h3 [] [ text "Old School Main Characters" ]
+        , ul [] (List.map viewNickname nicknames)
         ]
 
 
